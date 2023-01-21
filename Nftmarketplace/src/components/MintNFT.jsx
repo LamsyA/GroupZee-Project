@@ -5,6 +5,7 @@ import { create } from 'ipfs-http-client'
 import { Buffer } from 'buffer'
 import {setAlert, setGlobalState, setLoadingMsg, useGlobalState} from '../store/Data'
 import {  mintNFT } from '../Blockchain.services'
+import { toast } from 'react-toastify'
 
 
 const imgBanner =
@@ -41,21 +42,23 @@ const MintNFT = () => {
 
         if(!title || !description || !price) return
         setGlobalState('modal','scale-0' )
-        setLoadingMsg('Uploading Data to IPFS...')
+        // setLoadingMsg('Uploading Data to IPFS...')
 
         try {
             const created = await client.add(fileUrl)
             const metadataURI = `https://ipfs.io/ipfs/${created.path}`
             const nft = {metadataURI,title, description,   price}
-            setLoadingMsg("Awaiting Approval...")
+            // setLoadingMsg("Awaiting Approval...")
             console.log(nft)
             setFileUrl(metadataURI)
             await mintNFT(nft)
+            toast.success('Proposal created, reloading in progress...')
+            
             closeToggle()
-            setAlert('Successfully Minted...')
+            // setAlert('Successfully Minted...')
         } catch (error) {
             console.log("Error uploading", error)
-            setAlert("Minting failed...", 'red')
+            // setAlert("Minting failed...", 'red')
             
         }
     }
