@@ -75,6 +75,8 @@ const structuredNfts = (nfts) => {
     .reverse()
 }
 
+
+
 const AllNFTs = async () => {
   try {
     if (!ethereum) return alert('Please install Metamask')
@@ -82,7 +84,7 @@ const AllNFTs = async () => {
     const contract = await getEthereumContract()
     const nfts = await contract.methods.listNFTs().call()
     const transactions = await contract.methods.transactionHistory().call()
-    console.log('Transaction :',structuredNfts(transactions))
+    console.log('Transaction :',transactions)
     console.log("NFT's:...",structuredNfts(nfts))
 
     setGlobalState('nfts', structuredNfts(nfts))

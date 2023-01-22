@@ -107,19 +107,19 @@ contract NFTMarketplace {
 
         payEther(tokens[tokenId].owner, msg.value);
 
-        tokens[tokenId].owner = msg.sender;
-        emit TokenSold(tokens[tokenId].owner, msg.sender, tokenId);
         transactions.push(
             Token(
                 msg.sender,
-                msg.value,
+                tokenId,
                 tokens[tokenId].tokenURL,
                 tokens[tokenId].title,
-                tokenId,
+                msg.value,
                 tokens[tokenId].description,
                 block.timestamp
             )
         );
+        emit TokenSold(tokens[tokenId].owner, msg.sender, tokenId);
+        tokens[tokenId].owner = msg.sender;
     }
 
     // function getTokenDetails()

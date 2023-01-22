@@ -1,10 +1,11 @@
 // import Identicon from 'react-identicons'
-import { setGlobalState } from '../store/Data'
+import { setGlobalState, slice, useGlobalState } from '../store/Data'
 
 
-const imgBanner = `https://images.cointelegraph.com/images/1434_aHR0cHM6Ly9zMy5jb2ludGVsZWdyYXBoLmNvbS91cGxvYWRzLzIwMjEtMDYvNGE4NmNmOWQtODM2Mi00YmVhLThiMzctZDEyODAxNjUxZTE1LmpwZWc=.jpg`
+const imgBanner = `https://vs-lb.com/wp-content/uploads/2021/08/nft-art-explained-a-renaissance-in-the-digital-times-beeple-astro-1024x576.jpg`
 
 const Banner = () => {
+    const [connectedAccount]= useGlobalState('connectedAccount')
     const openToggle =() => {
         setGlobalState('modal', 'scale-100')
     }
@@ -54,7 +55,7 @@ const Banner = () => {
              {/* <Identicon className="h-10 w-10 object-contain rounded-full mr-3"
              string={"0x21..786a"} size={50} /> */}
              <div>
-                <p className='text-white font-semibold '>0x21..786a</p>
+                <p className='text-white font-semibold '>{slice(connectedAccount,4,4,11)}</p>
                 <small className='text-amber-400 font-bold'> @you</small>
              </div>
         </div>

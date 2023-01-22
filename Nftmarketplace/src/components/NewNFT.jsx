@@ -67,7 +67,7 @@ const NewNFT = () => {
 
             <div className='flex justify-center items-center 
                 rounded-xl mt-5 '>
-                <div className='shrink-0 rounded-xl overflow-hidden h-3/5 w-3/5' >
+                <div className='shrink-0 rounded-xl overflow-hidden h-40 w-40' >
                     <img className='h-full w-full object-cover cursor-pointer'
                         src={nft?.tokenURL} alt={nft?.title} />
                 </div>
