@@ -2,7 +2,7 @@
 import { setGlobalState, slice, useGlobalState } from '../store/Data'
 
 
-const imgBanner = `https://images.cointelegraph.com/cdn-cgi/image/format=auto,onerror=redirect,quality=90,width=1434/https://s3.cointelegraph.com/uploads/2023-01/77a3b6cd-a808-430b-a412-5bf975954c59.jpg`
+const imgBanner = `https://vs-lb.com/wp-content/uploads/2021/08/nft-art-explained-a-renaissance-in-the-digital-times-beeple-astro-1024x576.jpg`
 
 const Banner = () => {
     const [connectedAccount]= useGlobalState('connectedAccount')

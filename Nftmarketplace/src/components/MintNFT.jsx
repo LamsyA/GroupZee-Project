@@ -8,7 +8,7 @@ import {  mintNFT } from '../Blockchain.services'
 
 
 const imgBanner =
- `https://images.cointelegraph.com/images/1434_aHR0cHM6Ly9zMy5jb2ludGVsZWdyYXBoLmNvbS91cGxvYWRzLzIwMjEtMDYvNGE4NmNmOWQtODM2Mi00YmVhLThiMzctZDEyODAxNjUxZTE1LmpwZWc=.jpg`
+ `https://images.cointelegraph.com/cdn-cgi/image/format=auto,onerror=redirect,quality=90,width=1434/https://s3.cointelegraph.com/uploads/2023-01/77a3b6cd-a808-430b-a412-5bf975954c59.jpg`
 
     const auth =
     'Basic ' +
