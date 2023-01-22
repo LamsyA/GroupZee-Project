@@ -1,150 +1,137 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0 <0.9.0;
 
-import "./ERC721.sol";
-import "./ERC721Enumerable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+pragma solidity ^0.8.0;
 
-contract NFTMarketplace is ERC721Enumerable, Ownable {
-    using Strings for uint256;
-    mapping(string => uint8) existingURIs;
-    mapping(uint256 => address) public tokenHolders;
+import "@openzeppelin/contracts/utils/Counters.sol";
 
-    address public artist;
-    uint256 public royaltyFee;
-    uint256 public supply = 0;
-    uint256 public totalTransactions = 0;
-    uint256 public mintingCost = 0.01 ether;
+contract NFTMarketplace {
+    using Counters for Counters.Counter;
 
-    event Sale(
-        uint256 id,
-        address indexed owner,
-        uint256 cost,
-        string metadataURI,
-        uint256 timestamp
-    );
+    Counters.Counter public _TokenId;
+    // Counters.Counter public _candidateId;
 
-    struct Transaction {
-        uint256 id;
+    struct Token {
         address owner;
-        uint256 cost;
+        uint256 id;
+        string tokenURL;
         string title;
+        uint256 price;
         string description;
-        string metadataURI;
         uint256 timestamp;
     }
+    Token[] transactions;
+    mapping(uint256 => Token) public tokens;
+    uint256[] private tokenIdNumber;
 
-    Transaction[] pastTransactions;
-    Transaction[] currentSupply;
+    mapping(string => bool) public mintedUrls;
 
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        uint256 _royaltyFee,
-        address _artist
-    ) ERC721(_name, _symbol) {
-        royaltyFee = _royaltyFee;
-        artist = _artist;
+    event TokenCreated(
+        address sender,
+        uint256 tokenId,
+        string title,
+        uint256 timestamp,
+        string tokenPicture,
+        uint256 tokenPrice
+    );
+
+    event TokenSold(address from, address to, uint256 tokenId);
+
+    event TokenPriceChanged(address sender, uint256 tokenId, uint256 newPrice);
+
+    function mint(
+        string memory tokenPicture,
+        string memory tokenTitle,
+        string memory tokenDescription,
+        uint256 tokenPrice
+    ) public payable {
+        require(
+            !mintedUrls[tokenPicture],
+            "Token with this picture already exists."
+        );
+        _TokenId.increment();
+
+        uint256 tokenId = _TokenId.current();
+
+        Token storage tk = tokens[tokenId];
+
+        tk.owner = msg.sender;
+        tk.id = tokenId;
+        tk.tokenURL = tokenPicture;
+        tk.title = tokenTitle;
+        tk.price = tokenPrice;
+        tk.description = tokenDescription;
+        tk.timestamp = block.timestamp;
+
+        tokenIdNumber.push(tokenId);
+
+        emit TokenCreated(
+            msg.sender,
+            tokenId,
+            tokenTitle,
+            block.timestamp,
+            tokenPicture,
+            tokenPrice
+        );
+        mintedUrls[tokenPicture] = true;
     }
 
-    function mintNewToken(
-        string memory title,
-        string memory description,
-        string memory metadataURI,
-        uint256 salesPrice
-    ) external payable {
-        require(msg.value >= mintingCost, "Ether too low for minting!");
-        require(existingURIs[metadataURI] == 0, "This NFT is already minted!");
-        require(msg.sender != owner(), "Sales not allowed!");
-
-        uint256 royalty = (msg.value * royaltyFee) / 100;
-        payEther(artist, royalty);
-        payEther(owner(), (msg.value - royalty));
-
-        supply++;
-
-        currentSupply.push(
-            Transaction(
-                supply,
-                msg.sender,
-                salesPrice,
-                title,
-                description,
-                metadataURI,
-                block.timestamp
-            )
-        );
-
-        emit Sale(supply, msg.sender, msg.value, metadataURI, block.timestamp);
-
-        _safeMint(msg.sender, supply);
-        existingURIs[metadataURI] = 1;
-        tokenHolders[supply] = msg.sender;
+    function listNFTs() public view returns (Token[] memory) {
+        Token[] memory result = new Token[](tokenIdNumber.length);
+        for (uint256 i = 0; i < tokenIdNumber.length; i++) {
+            result[i] = tokens[tokenIdNumber[i]];
+        }
+        return result;
     }
 
-    function purchaseToken(uint256 id) external payable {
-        require(
-            msg.value >= currentSupply[id - 1].cost,
-            "Ether too low for purchase!"
-        );
-        require(
-            msg.sender != currentSupply[id - 1].owner,
-            "Operation Not Allowed!"
-        );
+    function transactionHistory() public view returns (Token[] memory) {
+        return transactions;
+    }
 
-        uint256 royalty = (msg.value * royaltyFee) / 100;
-        payEther(artist, royalty);
-        payEther(currentSupply[id - 1].owner, (msg.value - royalty));
-        totalTransactions++;
+    function changePrice(uint256 tokenId, uint256 newPrice) public {
+        require(
+            tokens[tokenId].owner == msg.sender,
+            "You are not the owner of this token."
+        );
+        require(newPrice > 0, "Price must be greater than 0.");
+        tokens[tokenId].price = newPrice;
 
-        pastTransactions.push(
-            Transaction(
-                totalTransactions,
+        emit TokenPriceChanged(msg.sender, tokenId, newPrice);
+    }
+
+    function buy(uint256 tokenId) public payable {
+        require(
+            tokens[tokenId].owner != msg.sender,
+            "You cannot buy your own token."
+        );
+        require(msg.value >= tokens[tokenId].price, "Insufficient funds.");
+
+        payEther(tokens[tokenId].owner, msg.value);
+
+        tokens[tokenId].owner = msg.sender;
+        emit TokenSold(tokens[tokenId].owner, msg.sender, tokenId);
+        transactions.push(
+            Token(
                 msg.sender,
                 msg.value,
-                currentSupply[id - 1].title,
-                currentSupply[id - 1].description,
-                currentSupply[id - 1].metadataURI,
+                tokens[tokenId].tokenURL,
+                tokens[tokenId].title,
+                tokenId,
+                tokens[tokenId].description,
                 block.timestamp
             )
         );
-
-        emit Sale(
-            totalTransactions,
-            msg.sender,
-            msg.value,
-            currentSupply[id - 1].metadataURI,
-            block.timestamp
-        );
-
-        currentSupply[id - 1].owner = msg.sender;
     }
 
-    function updatePrice(uint256 id, uint256 newPrice) external returns (bool) {
-        require(newPrice > 0 ether, "Ether too low!");
-        require(
-            msg.sender == currentSupply[id - 1].owner,
-            "Operation Not Allowed!"
-        );
-
-        currentSupply[id - 1].cost = newPrice;
-        return true;
-    }
+    // function getTokenDetails()
+    //     public
+    //     view
+    //     returns (Token[] memory)
+    // {
+    //     return tokens;
+    // }
 
     function payEther(address to, uint256 amount) internal {
         (bool success, ) = payable(to).call{value: amount}("");
         require(success);
-    }
-
-    function getAllTokenInfo() public view returns (Transaction[] memory) {
-        return currentSupply;
-    }
-
-    function getTokenInfo(uint256 id) public view returns (Transaction memory) {
-        return currentSupply[id - 1];
-    }
-
-    function getPastTransactions() public view returns (Transaction[] memory) {
-        return pastTransactions;
     }
 }

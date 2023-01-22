@@ -66,22 +66,24 @@ const structuredNfts = (nfts) => {
     .map((nft) => ({
       id: Number(nft.id),
       owner: nft.owner.toLowerCase(),
-      cost: window.web3.utils.fromWei(nft.cost),
+      price: window.web3.utils.fromWei(nft.price),
       title: nft.title,
       description: nft.description,
-      metadataURI: nft.metadataURI,
+      tokenURL: nft.tokenURL,
       timestamp: nft.timestamp,
     }))
     .reverse()
 }
 
-const getAllNFTs = async () => {
+const AllNFTs = async () => {
   try {
     if (!ethereum) return alert('Please install Metamask')
 
     const contract = await getEthereumContract()
-    const nfts = await contract.methods.getAllNFTs().call()
-    const transactions = await contract.methods.getAllTransactions().call()
+    const nfts = await contract.methods.listNFTs().call()
+    const transactions = await contract.methods.transactionHistory().call()
+    console.log('Transaction :',structuredNfts(transactions))
+    console.log("NFT's:...",structuredNfts(nfts))
 
     setGlobalState('nfts', structuredNfts(nfts))
     setGlobalState('transactions', structuredNfts(transactions))
@@ -90,7 +92,7 @@ const getAllNFTs = async () => {
   }
 }
 
-const mintNFT = async ({title, description, metadataURI,  price }) => {
+const mintNFT = async ({metadataURI,title, description,   price }) => {
   try {
     price = window.web3.utils.toWei(price.toString(), 'ether')
     //  console.log("price..",p)
@@ -100,7 +102,7 @@ const mintNFT = async ({title, description, metadataURI,  price }) => {
     // console.log(account)
     // const mintingCost = window.web3.utils.toWei('0.01', 'ether')
     // console.log("minted price", mintingCost)
-   const value =  await contract.methods.mintNewToken(title, description, metadataURI,  price).send({from: account})
+   const value =  await contract.methods.mint(metadataURI,title, description,   price).send({from: account})
    console.log("Value..", value)
     // return true
   } catch (error) {
@@ -143,7 +145,7 @@ const reportError = (error) => {
 }
 
 export {
-  getAllNFTs,
+  AllNFTs,
   connectWallet,
   getEthereumContract,
   mintNFT,

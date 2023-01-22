@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import {  isWalletConnected } from "./Blockchain.services"
+import {  AllNFTs, isWalletConnected } from "./Blockchain.services"
 import Alert from "./components/Alert"
 import Banner from "./components/Banner"
 import Collections from "./components/Collections"
@@ -21,6 +21,7 @@ function App() {
       console.log('Blockchain loaded')
       setLoaded(true);
        const result = await isWalletConnected()
+       await AllNFTs()
       };
       loadData();
     },[])
