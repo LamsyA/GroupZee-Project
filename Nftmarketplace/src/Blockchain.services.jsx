@@ -112,17 +112,15 @@ const mintNFT = async ({metadataURI,title, description,   price }) => {
   }
 }
 
-const buyNFT = async ({ id, cost }) => {
+const purchaseNft = async (tokenId,  newPrice) => {
   try {
-    cost = window.web3.utils.toWei(cost.toString(), 'ether')
+    newPrice = window.web3.utils.toWei(newPrice.toString(), 'ether')
     const contract = await getEthereumContract()
-    const buyer = getGlobalState('connectedAccount')
-
-    await contract.methods
-      .payToBuy(Number(id))
-      .send({ from: buyer, value: cost })
-
-    return true
+    const connectedAccount = getGlobalState('connectedAccount')
+   const buyNew = await contract.methods.buy(Number(tokenId))
+   .send({ from: connectedAccount, value: newPrice })
+   
+   return true
   } catch (error) {
     reportError(error)
   }
@@ -152,7 +150,7 @@ export {
   connectWallet,
   getEthereumContract,
   mintNFT,
-  buyNFT,
+  purchaseNft,
   updatePrice,
   isWalletConnected,
 }

@@ -1,24 +1,43 @@
 import React from 'react'
 import {FaTimes} from "react-icons/fa"
-// import {Identicon} from 'react-identicons'
-import {setGlobalState,  slice,  useGlobalState} from '../store/Data'
-
-const imgBanner =
- `https://images.cointelegraph.com/images/1434_aHR0cHM6Ly9zMy5jb2ludGVsZWdyYXBoLmNvbS91cGxvYWRzLzIwMjEtMDYvNGE4NmNmOWQtODM2Mi00YmVhLThiMzctZDEyODAxNjUxZTE1LmpwZWc=.jpg`
+import { purchaseNft } from '../Blockchain.services'
+import {setAlert, setGlobalState,  setLoadingMsg,  slice,  useGlobalState} from '../store/Data'
 
 
 const NewNFT = () => {
 
-    const [showNft] = useGlobalState('showNft')
-    
+    const [showNft] = useGlobalState('showNft')   
     const [nft] = useGlobalState('nft')
     const [connectedAccount] = useGlobalState('connectedAccount')
 
+    const onPurchase = async () =>{
+        setGlobalState('showNft', "scale-0")
+        setLoadingMsg('Purchasing in progress')
+        console.log(nft)
+        try {
+            setLoadingMsg("Processing Transaction...")
+
+         const newO =  await purchaseNft(nft.id,nft.price)
+         console.log('newO...', newO)
+           
+           setAlert("NFT Purchase Successful ..")
+            window.location.reload()
+        } catch (error) {
+            console.log("error purchasing NFT", error)
+            setAlert("Purchase Failed!", 'red')
+        }
+
+    }
+    
     const onChangePrice = () =>{
         setGlobalState('nft', nft)
         setGlobalState('showNft', "scale-0")
         setGlobalState("updateModal", "scale-100")
     }
+
+   
+
+   
         
     
     
@@ -84,9 +103,12 @@ const NewNFT = () => {
                 Change Price
          </button>
                 ): (
-                    <button className=" flex justify-center items-center
+                    <button
+                    onClick={onPurchase}
+                     className=" flex justify-center items-center
                         shadow-lg shadow-black text-white bg-[#b5ba25]
-                        hover:bg-[#1e0a9a] rounded-full mt-5 w-full p-2 "> 
+                        hover:bg-[#1e0a9a] rounded-full mt-5 w-full p-2 "
+                        > 
                         Purchase 
                  </button>
                 )}

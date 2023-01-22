@@ -13,7 +13,7 @@ const Update = () => {
     const [modal] = useGlobalState('updateModal')
     const [nft] = useGlobalState('nft')
 
-    const [price, setPrice] = useState(nft?.price)
+    const [price, setPrice] = useState('')
 
     const handleSubmit = async (e) =>{
         e.preventDefault()
@@ -30,9 +30,7 @@ const Update = () => {
 
            await updatePrice({tokenId: nft.id, newPrice: price})
            
-           setAlert("Price Update..")
-        //    closeToggle()
-           
+           setAlert("Price Updated Successfully!..")
            window.location.reload()
         } catch (error) {
             console.log("error updating price", error)
