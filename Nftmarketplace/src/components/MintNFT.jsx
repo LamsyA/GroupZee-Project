@@ -17,13 +17,13 @@ const imgBanner =
     ).toString('base64')
 
     const client = create({
-    host: 'ipfs.infura.io',
-    port: 5001,
-    protocol: 'https',
-    headers: {
-    authorization: auth,
- },
-})
+        host: 'ipfs.infura.io',
+        port: 5001,
+        protocol: 'https',
+        headers: {
+          authorization: auth,
+        },
+      })
 
 const MintNFT = () => {
 
@@ -45,7 +45,7 @@ const MintNFT = () => {
 
         try {
             const created = await client.add(fileUrl)
-            const metadataURI = `https://ipfs.infura.io${created.path}`
+            const metadataURI = `https://ipfs.io/ipfs/${created.path}`
             const nft = {metadataURI,title, description,   price}
             setLoadingMsg("Awaiting Approval...")
             console.log(nft)
