@@ -52,7 +52,7 @@ const Transaction = ({tx}) => (
        <VscArrowSwap/>
        </div>
         <div>
-            <h4 className='text-sm'>Fund Transferred</h4>
+            <h4 className='text-sm'>NFT Transferred</h4>
             <small className='flex justify-start items-center'>
                 <span className='mr-1'>Bought by</span>
                 <a className='text-amber-400 mr-2' href="#" target="_blank">{slice(tx.owner,4,4,11)}</a>

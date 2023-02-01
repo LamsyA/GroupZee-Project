@@ -97,9 +97,9 @@ const AllNFTs = async () => {
 const mintNFT = async ({metadataURI,title, description,   price }) => {
   try {
     price = window.web3.utils.toWei(price.toString(), 'ether')
-    //  console.log("price..",p)
+    
     const contract = await getEthereumContract()
-    console.log("contract", contract)
+    // console.log("contract", contract)
     const account = getGlobalState('connectedAccount')
     // console.log(account)
     // const mintingCost = window.web3.utils.toWei('0.01', 'ether')
@@ -107,7 +107,7 @@ const mintNFT = async ({metadataURI,title, description,   price }) => {
    const value =  await contract.methods.mint(metadataURI,title, description,   price).send({from: account})
    console.log("Value..", value)
    window.location.reload()
-    // return true
+     return true
   } catch (error) {
     console.error(error)
     reportError(error)
@@ -137,6 +137,8 @@ const updatePrice = async ({  tokenId, newPrice}) => {
 
    const ch = await contract.methods.changePrice(Number(tokenId), newPrice).send({ from: account })
    console.log("ch...:", ch)
+   return true
+
   } catch (error) {
     reportError(error)
   }

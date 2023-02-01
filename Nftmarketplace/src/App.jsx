@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import { ToastContainer } from 'react-toastify'
 import {  AllNFTs, getEthereumContract, isWalletConnected } from "./Blockchain.services"
 import Alert from "./components/Alert"
 import Banner from "./components/Banner"
@@ -11,7 +10,6 @@ import MintNFT from "./components/MintNFT"
 import NewNFT from "./components/NewNFT"
 import Transactions from "./components/Transactions"
 import Update from "./components/Update"
-
 
 
 function App() {
@@ -43,17 +41,6 @@ function App() {
       <Loader/>
       <Alert/>
       
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       
     </div>
   )

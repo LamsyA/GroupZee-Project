@@ -17,11 +17,16 @@ const NewNFT = () => {
         try {
             setLoadingMsg("Processing Transaction...")
 
-         const newO =  await purchaseNft(nft.id,nft.price)
-         console.log('newO...', newO)
-           
-           setAlert("NFT Purchase Successful ..")
-            window.location.reload()
+         const purchase =  await purchaseNft(nft.id,nft.price)
+         if (purchase === true ) { 
+              setAlert('Purchase Successfully!..')}
+         else  { 
+              setAlert("Purchase failed", "red") 
+            }
+         
+         closeToggle()
+         window.location.reload()
+        
         } catch (error) {
             console.log("error purchasing NFT", error)
             setAlert("Purchase Failed!", 'red')

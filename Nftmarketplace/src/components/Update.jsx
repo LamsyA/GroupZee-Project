@@ -28,10 +28,15 @@ const Update = () => {
             setLoadingMsg("Updating Price...")
             setGlobalState("updateModal", "scale-0")
 
-           await updatePrice({tokenId: nft.id, newPrice: price})
-           
-           setAlert("Price Updated Successfully!..")
-           window.location.reload()
+            const result = await updatePrice({tokenId: nft.id, newPrice: price})
+
+            if (result === true ) { 
+                 setAlert('Price Updated Successfully!..')}
+            else  { 
+                 setAlert("Failed to update", "red") }
+            
+            closeToggle()
+            window.location.reload()
         } catch (error) {
             console.log("error updating price", error)
             setAlert("Update Failed!", 'red')
