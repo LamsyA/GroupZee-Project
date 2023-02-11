@@ -5,7 +5,7 @@ import { create } from 'ipfs-http-client'
 import { Buffer } from 'buffer'
 import {setAlert, setGlobalState, setLoadingMsg, useGlobalState} from '../store/Data'
 import {  mintNFT } from '../Blockchain.services'
-import { toast } from 'react-toastify'
+// import { toast } from 'react-toastify'
 
 
 const imgBanner =
@@ -52,7 +52,7 @@ const MintNFT = () => {
             console.log(nft)
             setFileUrl(metadataURI)
             await mintNFT(nft)
-            toast.success('Proposal created, reloading in progress...')
+            // toast.success('Proposal created, reloading in progress...')
             
             closeToggle()
             // setAlert('Successfully Minted...')
