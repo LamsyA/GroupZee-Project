@@ -104,7 +104,8 @@ const mintNFT = async ({metadataURI,title, description,   price }) => {
     // console.log(account)
     // const mintingCost = window.web3.utils.toWei('0.01', 'ether')
     // console.log("minted price", mintingCost)
-   const value =  await contract.methods.mint(metadataURI,title, description,   price).send({from: account})
+   const value =  await contract.methods.mint(metadataURI, title,
+     description, price).send({from: account})
    console.log("Value..", value)
    window.location.reload()
      return true
