@@ -54,9 +54,9 @@ const MintNFT = () => {
            const result = await mintNFT(nft)
             
             if (result === true ) { 
-                setAlert('Project Successfully Added...')}
+                setAlert('Minted Successfully, Reloading ...')}
             else  { 
-                setAlert("Error adding project", "red") }
+                setAlert("Error Minting", "red") }
             
             closeToggle()
             // setAlert('Successfully Minted...')
